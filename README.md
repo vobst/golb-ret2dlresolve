@@ -1,6 +1,6 @@
 # ret2dlresolve & its friends
 
-This is the repository accompanying my blog post on the dynamic linker (DL). Click [here]() to read the full post.
+This is the repository accompanying my blog post on the dynamic linker (DL). Click [here](https://eb9f.de/2023/03/29/ret2dlresolve.html) to read the full post.
 
 ## How to use this repository
 
