@@ -1,0 +1,20 @@
+FROM archlinux:latest AS builder
+RUN yes | pacman -Sy gcc make patchelf
+WORKDIR /opt/ctf
+COPY libabe.c ./
+COPY Makefile ./
+COPY poc ./
+COPY ynetd ./
+RUN make libabe.so
+RUN patchelf --set-interpreter '/ld-linux-x86-64.so.2' --set-rpath '/' poc
+RUN patchelf --set-interpreter '/ld-linux-x86-64.so.2' --set-rpath '/' ynetd
+RUN patchelf --set-interpreter '/ld-linux-x86-64.so.2' --set-rpath '/' libabe.so
+
+FROM scratch
+COPY --from=builder /opt/ctf/poc /
+COPY --from=builder /opt/ctf/libabe.so /
+COPY --from=builder /opt/ctf/ynetd /
+COPY --from=builder /usr/lib/libc.so.6 /
+COPY --from=builder /usr/lib64/ld-linux-x86-64.so.2 /
+EXPOSE 1024
+CMD ["/ynetd","-sh","n","-p","1024","poc"]
